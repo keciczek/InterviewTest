@@ -54,7 +54,7 @@
                 <field>Rating</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>Phone</field>
             </layoutItems>
             <layoutItems>
