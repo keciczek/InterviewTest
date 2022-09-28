@@ -22,4 +22,23 @@ public with sharing class AccountTriggerTest {
         System.assertEquals(acc.ContactPhone__c, contacts[0].Phone, 'Contact phones do not match.');
         System.assertEquals(acc.Email__c, contacts[0].Email, 'Emails do not match.');
     }
+
+    @isTest
+    static void shouldCreateUniqueId_whenNotPopulatedOnSave() {
+        Account acc = TestBuilders.accountBuilder()
+            .setName('name')
+            .setContactLastName('contact_last_name')
+            .setEmail('test@email.com')
+            .get();
+
+        System.assertEquals(null, acc.ExternalId__c, 'External id should be empty before inserting');
+
+        Test.startTest();
+        insert acc;
+        Test.stopTest();
+
+        acc = [SELECT ExternalId__c FROM Account WHERE Id = :acc.Id];
+
+        System.assertEquals('name_test@email.com', acc.ExternalId__c, 'External Id was generated incorrectly.');
+    }
 }
