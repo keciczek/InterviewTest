@@ -54,7 +54,8 @@ public with sharing class AccountTriggerHelper {
             FirstName = acc.ContactFirstName__c,
             LastName = acc.ContactLastName__c,
             Email = acc.Email__c,
-            Phone = acc.ContactPhone__c
+            Phone = acc.ContactPhone__c,
+            AccountId = acc.Id
         );
     }
 
