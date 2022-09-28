@@ -45,6 +45,21 @@ public with sharing class AccountTriggerHelper {
         update accountsToUpdate;
     }
 
+    public static void createMissingContacts(List<Account> accounts) {
+        List<Account> accountsWithContacts = AccountSelectors.getAccountsWithContacts(accounts);
+        List<Account> accountsToCreateContacts = new List<Account>();
+
+        for (Account acc : accountsWithContacts) {
+            if (acc.Contacts.isEmpty()) {
+                accountsToCreateContacts.add(acc);
+            }
+        }
+
+        if (!accountsToCreateContacts.isEmpty()) {
+            createRelatedContacts(accountsToCreateContacts);
+        }
+    }
+
     private static String getExternalId(Account acc) {
         return String.format(EXTERNAL_ID_TEMPLATE, new List<String> { acc.Name, acc.Email__c });
     }

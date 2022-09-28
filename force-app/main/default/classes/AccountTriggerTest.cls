@@ -82,4 +82,31 @@ public with sharing class AccountTriggerTest {
         acc = [SELECT ExternalId__c FROM Account WHERE Id = :acc.Id];
         System.assertEquals('name_test2@email.com', acc.ExternalId__c, 'External Id was updated incorrectly.');
     }
+
+    @IsTest
+    static void shouldCreateMissingContact_onAccountUpdate() {
+        Account acc = TestBuilders.accountBuilder()
+            .setName('name')
+            .setContactLastName('contact_last_name')
+            .setEmail('test@email.com')
+            .get();
+        insert acc;
+
+        List<Contact> contacts = [SELECT Id FROM Contact WHERE AccountId = :acc.Id];
+        System.assertEquals(1, contacts.size(), 'One contact should be created');
+
+        delete contacts;
+
+        acc = [SELECT (SELECT Id FROM Contacts) FROM Account WHERE Id = :acc.Id];
+        System.assert(acc.Contacts.isEmpty(), 'No contacts sould be related to that Account');
+
+        acc.Name = 'name2';
+
+        Test.startTest();
+        update acc;
+        Test.stopTest();
+
+        acc = [SELECT (SELECT Id FROM Contacts) FROM Account WHERE Id = :acc.Id];
+        System.assertEquals(1, acc.Contacts.size(), 'Missing contact should be created');
+    }
 }
