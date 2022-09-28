@@ -13,6 +13,7 @@ public with sharing class AccountTriggerHandler extends TriggerHandler {
 
     public override void afterUpdate() {
         AccountTriggerHelper.updateExternalId(newAccounts, oldAccountsMap);
+        AccountTriggerHelper.createMissingContacts(newAccounts);
     }
 
 }
