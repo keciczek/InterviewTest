@@ -2,11 +2,17 @@
 public with sharing class TestBuilders {
 
     private static final String DEFAULT_ACCOUNT_NAME = 'Test Account';
+    private static final String DEFAULT_CONTACT_NAME = 'Test Contact';
 
     private static Integer accountCount = 0;
+    private static Integer contactCount = 0;
 
     public static AccountBuilder accountBuilder() {
         return new AccountBuilder();
+    }
+
+    public static ContactBuilder contactBuilder() {
+        return new ContactBuilder();
     }
 
     public class AccountBuilder {
@@ -49,6 +55,36 @@ public with sharing class TestBuilders {
         }
 
         public Account insertAndGet() {
+            insert this.record;
+            return this.record;
+        }
+    }
+
+    public class ContactBuilder {
+
+        private Contact record;
+
+        public ContactBuilder() {
+            this.record = new Contact(
+                LastName = DEFAULT_CONTACT_NAME + ++contactCount
+            );
+        }
+
+        public ContactBuilder setLastName(String name) {
+            this.record.LastName = name;
+            return this;
+        }
+
+        public ContactBuilder setEmail(String email) {
+            this.record.Email = email;
+            return this;
+        }
+
+        public Contact get() {
+            return this.record;
+        }
+
+        public Contact insertAndGet() {
             insert this.record;
             return this.record;
         }
