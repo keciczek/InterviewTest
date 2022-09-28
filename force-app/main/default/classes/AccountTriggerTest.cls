@@ -23,7 +23,7 @@ public with sharing class AccountTriggerTest {
         System.assertEquals(acc.Email__c, contacts[0].Email, 'Emails do not match.');
     }
 
-    @isTest
+    @IsTest
     static void shouldCreateUniqueId_whenNotPopulatedOnSave() {
         Account acc = TestBuilders.accountBuilder()
             .setName('name')
@@ -40,5 +40,45 @@ public with sharing class AccountTriggerTest {
         acc = [SELECT ExternalId__c FROM Account WHERE Id = :acc.Id];
 
         System.assertEquals('name_test@email.com', acc.ExternalId__c, 'External Id was generated incorrectly.');
+    }
+
+    @IsTest
+    static void shouldUpdateExternalId_whenNameChanged() {
+        Account acc = TestBuilders.accountBuilder()
+            .setName('name')
+            .setContactLastName('contact_last_name')
+            .setEmail('test@email.com')
+            .get();
+        insert acc;
+        acc = [SELECT ExternalId__c FROM Account WHERE Id = :acc.Id];
+        System.assertEquals('name_test@email.com', acc.ExternalId__c, 'External Id was generated incorrectly.');
+
+        Test.startTest();
+        acc.Name = 'name2';
+        update acc;
+        Test.stopTest();
+
+        acc = [SELECT ExternalId__c FROM Account WHERE Id = :acc.Id];
+        System.assertEquals('name2_test@email.com', acc.ExternalId__c, 'External Id was updated incorrectly.');
+    }
+
+    @IsTest
+    static void shouldUpdateExternalId_whenEmailhanged() {
+        Account acc = TestBuilders.accountBuilder()
+            .setName('name')
+            .setContactLastName('contact_last_name')
+            .setEmail('test@email.com')
+            .get();
+        insert acc;
+        acc = [SELECT ExternalId__c FROM Account WHERE Id = :acc.Id];
+        System.assertEquals('name_test@email.com', acc.ExternalId__c, 'External Id was generated incorrectly.');
+
+        Test.startTest();
+        acc.Email__c = 'test2@email.com';
+        update acc;
+        Test.stopTest();
+
+        acc = [SELECT ExternalId__c FROM Account WHERE Id = :acc.Id];
+        System.assertEquals('name_test2@email.com', acc.ExternalId__c, 'External Id was updated incorrectly.');
     }
 }

@@ -20,6 +20,31 @@ public with sharing class AccountTriggerHelper {
         insert contacts;
     }
 
+    public static void updateExternalId(List<Account> newAccounts, Map<Id, Account> oldAccounts) {
+        List<Account> accountsToConsider = new List<Account>();
+
+        for (Account acc : newAccounts) {
+            if (nameOrEmailChanged(acc, oldAccounts.get(acc.Id))) {
+                accountsToConsider.add(acc);
+            }
+        }
+
+        if (accountsToConsider.isEmpty()) {
+            return;
+        }
+
+        List<Account> accountsToUpdate = new List<Account>();
+
+        for (Account acc : accountsToConsider) {
+            accountsToUpdate.add(new Account(
+                Id = acc.Id,
+                ExternalId__c = getExternalId(acc)
+            ));
+        }
+
+        update accountsToUpdate;
+    }
+
     private static String getExternalId(Account acc) {
         return String.format(EXTERNAL_ID_TEMPLATE, new List<String> { acc.Name, acc.Email__c });
     }
@@ -31,6 +56,10 @@ public with sharing class AccountTriggerHelper {
             Email = acc.Email__c,
             Phone = acc.ContactPhone__c
         );
+    }
+
+    private static Boolean nameOrEmailChanged(Account newAccount, Account oldAccount) {
+        return newAccount.Name != oldAccount.Name || newAccount.Email__c != oldAccount.Email__c;
     }
 
 }
