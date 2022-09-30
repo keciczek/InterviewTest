@@ -1,0 +1,41 @@
+<template>
+    <lightning-card title="Update account">
+        <lightning-spinner if:true={isLoading}></lightning-spinner>
+        <lightning-layout multiple-rows="true" vertical-align="end" horizontal-align="spread">
+            <lightning-layout-item padding="around-medium" size="12" if:true={state.isError}>
+                <span class="error">{error}</span>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-medium" size="12" if:false={state.dataFound}>
+                <lightning-layout multiple-rows="false" vertical-align="end" horizontal-align="spread">
+                    <lightning-layout-item size="9">
+                        <lightning-input label="Enter search query" type="text" data-name="query" onchange={onchange}></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="2">
+                        <!-- <lightning-button label="Search" class={buttonClass} title="Search" data-name="search" onclick={onClick} ></lightning-button> -->
+                        <input type="button" value="Search" onclick={onClick} data-name="search" class={buttonClasses}/>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </lightning-layout-item>
+
+            <lightning-layout-item padding="around-medium" size="12" if:true={state.dataFound}>
+                <lightning-layout multiple-rows="true" vertical-align="end" horizontal-align="start">
+                    <lightning-layout-item padding="around-small" size="12">
+                        <h2>Found values:</h2>
+                        <ul class="slds-list_dotted">
+                            <li><b>Revenue:</b> {revenue}</li>
+                            <li><b>Ranking:</b> {ranking}</li>
+                        </ul>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small">
+                        <lightning-button label="Cancel" title="Cancel" data-name="cancel" onclick={onClick} ></lightning-button>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small">
+                        <lightning-button label="Save data" title="Save data" data-name="submit" onclick={onClick} ></lightning-button>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+</template>
+
+
