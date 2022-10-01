@@ -75,6 +75,11 @@ public with sharing class TestBuilders {
             return this;
         }
 
+        public ContactBuilder setFirstName(String name) {
+            this.record.FirstName = name;
+            return this;
+        }
+
         public ContactBuilder setEmail(String email) {
             this.record.Email = email;
             return this;

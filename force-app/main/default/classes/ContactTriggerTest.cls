@@ -45,4 +45,29 @@ public with sharing class ContactTriggerTest {
 
     }
 
+    @IsTest
+    static void shouldNotLetCreateDuplicatedContact() {
+        TestBuilders.contactBuilder()
+            .setLastName('last_name')
+            .setFirstName('first_name')
+            .setEmail('test@email.com')
+            .insertAndGet();
+
+        Boolean exceptionThrown = false;
+
+        Test.startTest();
+         try {
+            TestBuilders.contactBuilder()
+            .setLastName('last_name')
+            .setFirstName('first_name')
+            .setEmail('test1@email.com')
+            .insertAndGet();
+         } catch(Exception e) {
+            exceptionThrown = true;
+         }
+        Test.stopTest();
+
+        System.assertEquals(true, exceptionThrown, 'Should throw exception when duplicated record is created.');
+    }
+
 }

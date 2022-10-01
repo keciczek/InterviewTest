@@ -2,14 +2,16 @@ public with sharing class ContactTriggerHelper {
 
     private static final String CONTACT_UNIQUE_ID_TEMPLATE = '{0}_{1}';
 
-    public static void populateUniqueField(List<Contact> contacts) {
-        for(Contact c : contacts) {
-            c.ContactUniqueId__c = getContactUniqueId(c);
-        }
-    }
+    public static void validateUnique(List<Contact> newContacts) {
+        Map<String, List<Contact>> contacts = ContactSelectors.getContactsMappedByName(newContacts);
+        Map<Id, Contact> withLastNames = new Map<Id, Contact>([SELECT Name FROM Contact WHERE Id IN : newContacts]);
 
-    private static String getContactUniqueId(Contact c) {
-        return String.format(CONTACT_UNIQUE_ID_TEMPLATE, new List<String> { c.LastName, c.Email });
+        for (Contact c : newContacts) {
+            Contact withName = withLastNames.get(c.Id);
+            if (contacts.containsKey(withName.Name) && contacts.get(withName.Name).size() > 1) {
+                c.addError('Duplicated');
+            }
+        }
     }
 
 }
