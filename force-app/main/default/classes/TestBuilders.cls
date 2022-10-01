@@ -80,6 +80,11 @@ public with sharing class TestBuilders {
             return this;
         }
 
+        public ContactBuilder setFirstName(String name) {
+            this.record.FirstName = name;
+            return this;
+        }
+
         public Contact get() {
             return this.record;
         }
