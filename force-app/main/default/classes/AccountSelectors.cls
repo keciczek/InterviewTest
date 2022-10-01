@@ -13,4 +13,8 @@ public with sharing class AccountSelectors {
         ];
     }
 
+    public static List<Account> getByExternalId(String externalId) {
+        return [SELECT Id FROM Account WHERE ExternalId__c = :externalId];
+    }
+
 }
